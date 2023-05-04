@@ -11,12 +11,10 @@ class User(BaseModel):
     height: Union[float, None] = None
 
 
-hard_coded = [{"id": 1, "name": "Euge", "surname": "Gime", "age": 38,
-              "height": 1.86},
-              {"id": 2, "name": "Juli", "surname": "Mattos", "age": 29,
-              "height": 1.65},
-              {"id": 3, "name": "Uno", "surname": "Dos", "age": 18,
-              "height": 1.22}]
+hard_coded = [User(id=1, name="Euge", surname="Gime", age=38, height=1.86)]
+hard_coded.append(
+    User(id=2, name="Juli", surname="Mattos", age=29, height=1.65))
+hard_coded.append(User(id=3, name="Uno", surname="Dos", age=18, height=1.22))
 
 
 app = FastAPI()
@@ -34,11 +32,12 @@ async def get_user(id: int):
 
 @app.post("/users/new")
 async def create_user(user: User):
+    print(user.id)
     if type(search_user(user.id)) == User:
         return {"message": "El usuario ya exite"}
     else:
         hard_coded.append(user)
-        # return [{"message": "EL usuario ha sido creado correctamente"}, hard_coded]
+        return [{"message": "EL usuario ha sido creado correctamente"}, hard_coded]
 
 
 @app.put("users/{user_id}/update")
