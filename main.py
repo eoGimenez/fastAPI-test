@@ -1,6 +1,6 @@
 from typing import Union
-from pydantic import BaseModel
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 
 class User(BaseModel):
@@ -15,6 +15,14 @@ hard_coded = [User(id=1, name="Euge", surname="Gime", age=38, height=1.86)]
 hard_coded.append(
     User(id=2, name="Juli", surname="Mattos", age=29, height=1.65))
 hard_coded.append(User(id=3, name="Uno", surname="Dos", age=18, height=1.22))
+
+
+def search_user(id: int):
+    user = filter(lambda user: user.id == id, hard_coded)
+    try:
+        return list(user)[0]
+    except:
+        return {"message": "El usuario no existe"}
 
 
 app = FastAPI()
@@ -45,11 +53,3 @@ async def edit_user(user_id: int, user: User):
     user_to_change = search_user(user_id)
     user_to_change = user
     return user_to_change
-
-
-def search_user(id: int):
-    user = filter(lambda user: user.id == id, hard_coded)
-    try:
-        return list(user)[0]
-    except:
-        return {"message": "El usuario no existe"}
