@@ -5,9 +5,9 @@ from functions.SearchUser import search_user
 
 
 db: List[User] = [
-    User(id=1, name="Euge", surname="Gime", age=38, height=1.86),
+   """  User(id=1, name="Euge", surname="Gime", age=38, height=1.86),
     User(id=2, name="Juli", surname="Mattos", age=29, height=1.65),
-    User(id=3, name="Uno", surname="Dos", age=18, height=1.22)
+    User(id=3, name="Uno", surname="Dos", age=18, height=1.22) """
 ]
 
 
