@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter
 from models.User import User
-from functions.SearchUser import search_user
+from functions.SearchUser import search_user, search_user_by_surname
 from db.config import db
 from schemas.user import user_schema, users_schema
 
@@ -22,7 +22,7 @@ async def users():
 
 @router.get("/{id}")
 async def get_user(id: str):
-    return search_user(id, db)
+    return search_user(id)
 
 
 @router.post("/")
@@ -30,6 +30,8 @@ async def create_user(user: User):
     # if type(search_user(user.id, db)) == User:
     #     return {"message": "El usuario ya exite"}
     # db.append(user) esto es offline
+    if type(search_user_by_surname(user.surname)) == User:
+        return {"message": "El usuario ya exite"}
 
     new_id = db.fastAPI.users.insert_one(dict(user)).inserted_id
     return [{"message": "EL usuario ha sido creado correctamente"}, user_schema(db.fastAPI.users.find_one({"_id": new_id}))]
@@ -37,7 +39,7 @@ async def create_user(user: User):
 
 @router.put("/")
 async def edit_user(user: User):
-    for index, db_user in enumerate(db):
+    for index, db_user in enumerate(users_schema(db.fastAPI.users)):
         if db_user.id == user.id:
             db[index] = user
             return [{"message": "EL usuario ha sido actualizado correctamente"}, db]
@@ -45,8 +47,9 @@ async def edit_user(user: User):
 
 
 @router.delete("/{id}")
-async def delete_user(id: int):
-    for index, db_user in enumerate(db):
+async def delete_user(id: str):
+    for index, db_user in enumerate(users_schema(db.fastAPI.users.find())):
+        print(id)
         if db_user.id == id:
             del db[index]
             return [{"message": "EL usuario ha sido eliminado"}, db]
